@@ -3,13 +3,8 @@
 #include "bellan_ford.h"
 #include "moore.h"
 
-#include <vector>
 #include <chrono>
 #include <iostream>
-
-#define DIJIKSTRA 0
-#define BELLAN_FORD 1
-#define MOORE 2
 
 using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;

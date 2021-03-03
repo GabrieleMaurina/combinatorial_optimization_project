@@ -2,7 +2,6 @@
 #define BELLAN_FORD_H
 
 #include "graph.h"
-#include <vector>
 
 using namespace std;
 

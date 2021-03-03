@@ -21,7 +21,7 @@ in a unordered set would be easier.
 //float
 #define f float
 
-#define MAX_COST 100
+#define MAX_CAPACITY 100
 
 using namespace std;
 
@@ -34,10 +34,11 @@ struct Vertex{
 
 struct Edge{
 	ui id;
-	sui cost;
+	sui u;
+	sui x = 0;
 	Vertex* from;
 	Vertex* to;
-	Edge(ui _id,sui _cost,Vertex* _from,Vertex* _to);
+	Edge(ui _id,sui _u,Vertex* _from,Vertex* _to);
 };
 
 struct Graph{

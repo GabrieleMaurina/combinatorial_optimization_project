@@ -2,10 +2,9 @@
 #define DIJIKSTRA_H
 
 #include "graph.h"
-#include <vector>
 
 using namespace std;
 
-void dijikstra(const Graph& g,const ui s);
+void ford_fulkerson(const Graph& g,const ui s,const ui t);
 
 #endif

@@ -1,9 +1,9 @@
-#include "dijikstra.h"
+#include "dijkstra.h"
 #include "graph.h"
 
 #include <vector>
 
-void dijikstra(const Graph& g,const ui s){
+void dijkstra(const Graph& g,const ui s){
 	const ui N = g.vertices.size();
 	vector<ui> cost(N,INF);
 	vector<ui> pred(N,s);

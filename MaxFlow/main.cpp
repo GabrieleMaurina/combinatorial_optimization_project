@@ -1,7 +1,5 @@
 #include "graph.h"
-#include "dijikstra.h"
-#include "bellan_ford.h"
-#include "moore.h"
+#include "ford_fulkerson.h"
 
 #include <chrono>
 #include <iostream>
@@ -13,15 +11,15 @@ using std::chrono::milliseconds;
 ui sizes[] = {1, 10, 100, 1000, 2000, 3000, 4000};
 f densities[] = {0.01, 0.05, 0.1};
 
-void run_benchmarks();
+/*void run_benchmarks();
 void run_tool(const sui i,const Graph& g,const ui s);
-ui time_tool(const ui i,const Graph& g,const ui s);
+ui time_tool(const ui i,const Graph& g,const ui s);*/
 
 int main(int argc, char**argv){
-	run_benchmarks();
+	//run_benchmarks();
 }
 
-void run_benchmarks(){
+/*void run_benchmarks(){
 	cout<<"density,|V|,|E|,dijikstra,bellan_ford,moore"<<endl;
 	for(auto density:densities)
 	for(auto n:sizes){
@@ -46,4 +44,4 @@ void run_tool(const sui i,const Graph& g,const ui s){
 	if(i==DIJIKSTRA)dijikstra(g,s);
 	else if(i==BELLAN_FORD)bellan_ford(g,s);
 	else if(i==MOORE)moore(g,s);
-}
+}*/

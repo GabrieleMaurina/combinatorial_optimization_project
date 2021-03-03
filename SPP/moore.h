@@ -2,7 +2,6 @@
 #define MOORE_H
 
 #include "graph.h"
-#include <vector>
 
 using namespace std;
 

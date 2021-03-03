@@ -1,12 +1,12 @@
 #include "graph.h"
-#include "dijikstra.h"
+#include "dijkstra.h"
 #include "bellan_ford.h"
 #include "moore.h"
 
 #include <chrono>
 #include <iostream>
 
-#define DIJIKSTRA 0
+#define DIJKSTRA 0
 #define BELLAN_FORD 1
 #define MOORE 2
 
@@ -26,7 +26,7 @@ int main(int argc, char**argv){
 }
 
 void run_benchmarks(){
-	cout<<"density,|V|,|E|,dijikstra,bellan_ford,moore"<<endl;
+	cout<<"density,|V|,|E|,dijkstra,bellan_ford,moore"<<endl;
 	for(auto density:densities)
 	for(auto n:sizes){
 		const Graph g(n,density);
@@ -47,7 +47,7 @@ ui time_tool(const ui i,const Graph& g,const ui s){
 }
 
 void run_tool(const sui i,const Graph& g,const ui s){
-	if(i==DIJIKSTRA)dijikstra(g,s);
+	if(i==DIJKSTRA)dijkstra(g,s);
 	else if(i==BELLAN_FORD)bellan_ford(g,s);
 	else if(i==MOORE)moore(g,s);
 }

@@ -14,7 +14,7 @@ using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
 
-ui sizes[] = {1, 10, 100, 1000, 2000, 3000, 4000};
+ui sizes[] = {10, 100, 1000, 2000, 3000, 4000};
 f densities[] = {0.01, 0.05, 0.1};
 
 void run_benchmarks();

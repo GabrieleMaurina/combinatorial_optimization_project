@@ -14,6 +14,8 @@ Graph::Graph(ui N,f density):vertices(N){
 		if(static_cast<float>(rand())/static_cast<float>(RAND_MAX)<density)
 		edges.push_back(Edge(e++,rand()%MAX_CAPACITY,&vertices[i],&vertices[j]));
 	}
-	for(ui i=0;i<edges.size();i++)
-	edges[i].from->edges.push_back(&edges[i]);
+	for(ui i=0;i<edges.size();i++){
+		edges[i].from->out_edges.push_back(&edges[i]);
+		edges[i].to->in_edges.push_back(&edges[i]);
+	}
 }

@@ -3,8 +3,20 @@
 
 #include "graph.h"
 
+#include <vector>
+
 using namespace std;
 
-void ford_fulkerson(const Graph& g,const ui s,const ui t);
+struct FordFulkerson{
+	Graph* g;
+	const ui s;
+	const ui t;
+	FordFulkerson(Graph* _g,const ui _s,const ui _t);
+	void run();
+	virtual bool compute_path() = 0;
+	vector<sui> x;
+	vector<Edge*> path;
+	vector<bool> path_dir;
+};
 
 #endif

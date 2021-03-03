@@ -1,28 +1,23 @@
-#include "dijikstra.h"
+#include "ford_fulkerson.h"
 #include "graph.h"
 
 #include <vector>
+#include <iostream>
 
-void ford_fulkerson(const Graph& g,const ui s,const ui t){
-	/*const ui N = g.vertices.size();
-	vector<ui> cost(N,INF);
-	vector<ui> pred(N,s);
-	vector<bool> flag(N,false);
-	cost[s] = 0;
-	for(ui i=0;i<N;i++){
-		ui cmin = INF;
-		ui idmin = 0;
-		for(ui j=0;j<N;j++)
-		if(!flag[j]&&cost[j]<cmin){
-			idmin = j;
-			cmin = cost[j];
-		}
-		flag[idmin] = true;
-		for(auto e:g.vertices[idmin].edges)
-		if(!flag[e->to->id])
-		if(cost[idmin]+e->cost<cost[e->to->id]){
-			cost[e->to->id] = cost[idmin]+e->cost;
-			pred[e->to->id] = idmin;
-		}
-	}*/
+FordFulkerson::FordFulkerson(Graph* _g,const ui _s,const ui _t):g(_g),s(_s),t(_t),x(_g->edges.size(),0){}
+
+void FordFulkerson::run(){
+	while(compute_path()){
+		sui delta = 255;
+		for(ui i=0; i<path.size();i++)
+			if(path_dir[i] && path[i]->u-x[path[i]->id]<delta)
+				delta = path[i]->u-x[path[i]->id];
+			else if(!path_dir[i] && x[path[i]->id]<delta)
+				delta = x[path[i]->id];
+		for(ui i=0; i<path.size();i++)
+			if(path_dir[i])
+				x[path[i]->id] -= delta;
+			else
+				x[path[i]->id] += delta;
+	}
 }

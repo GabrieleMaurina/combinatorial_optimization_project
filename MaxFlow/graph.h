@@ -29,13 +29,13 @@ struct Edge;
 
 struct Vertex{
 	ui id;
-	vector<Edge*> edges;
+	vector<Edge*> out_edges;
+	vector<Edge*> in_edges;
 };
 
 struct Edge{
 	ui id;
 	sui u;
-	sui x = 0;
 	Vertex* from;
 	Vertex* to;
 	Edge(ui _id,sui _u,Vertex* _from,Vertex* _to);

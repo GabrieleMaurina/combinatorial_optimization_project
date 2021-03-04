@@ -1,5 +1,8 @@
 #include "graph.h"
 #include "bfs.h"
+#include "bfs_bi.h"
+#include "dijkstra.h"
+#include "dijkstra_bi.h"
 
 #include <chrono>
 #include <iostream>
@@ -13,8 +16,10 @@ using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
 
-ui sizes[] = {10, 100, 1000, 2000, 3000, 4000};
-f densities[] = {0.01, 0.05, 0.1};
+//ui sizes[] = {10, 100, 1000, 2000, 3000, 4000};
+//f densities[] = {0.01, 0.05, 0.1};
+ui sizes[] = {10};
+f densities[] = {0.5};
 
 void run_benchmarks();
 void run_tool(const sui i,Graph* g,const ui s,const ui t);
@@ -47,7 +52,7 @@ ui time_tool(const ui i,Graph* g,const ui s,const ui t){
 
 void run_tool(const sui i,Graph* g,const ui s,const ui t){
 	if(i==BFS)Bfs(g,s,t).run();
-	/*else if(i==BFS_BI)BfsBi(&g,s,t);
-	else if(i==DIJIKSTRA)Dijkstra(&g,s,t);
-	else if(i==DIJIKSTRA_BI)DijkstraBi(&g,s,t);*/
+	else if(i==BFS_BI)BfsBi(g,s,t).run();
+	else if(i==DIJKSTRA)Dijkstra(g,s,t).run();
+	else if(i==DIJKSTRA_BI)DijkstraBi(g,s,t).run();
 }

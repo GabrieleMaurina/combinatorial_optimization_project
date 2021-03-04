@@ -1,10 +1,10 @@
-#include "bfs.h"
+#include "dijkstra.h"
 #include "graph.h"
 #include "ford_fulkerson.h"
 
 #include <queue>
 
-bool Bfs::compute_path(){
+bool Dijkstra::compute_path(){
 	path.clear();
 	path_dir.clear();
 	queue<ui> q;

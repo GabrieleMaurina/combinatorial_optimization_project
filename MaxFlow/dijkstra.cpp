@@ -35,7 +35,6 @@ bool Dijkstra::compute_path(){
 				q.push({nc,e->to->id});
 				pred[e->to->id] = e->id;
 				dir[e->to->id] = true;
-
 			}
 		}
 		for(auto e:g->vertices[i].in_edges){

@@ -3,6 +3,7 @@
 #include "ford_fulkerson.h"
 
 #include <queue>
+#include <iostream>
 
 bool DijkstraBi::compute_path(){
 	path.clear();
@@ -10,7 +11,7 @@ bool DijkstraBi::compute_path(){
 	priority_queue<pair<sui,ui>> qs;
 	priority_queue<pair<sui,ui>> qt;
 	vector<sui> cs(g->vertices.size(),0);
-	vector<sui> cs(g->vertices.size(),0);
+	vector<sui> ct(g->vertices.size(),0);
 	vector<bool> vs(g->vertices.size(),false);
 	vector<bool> vt(g->vertices.size(),false);
 	vector<ui> ps(g->vertices.size());
@@ -19,8 +20,6 @@ bool DijkstraBi::compute_path(){
 	vector<bool> dt(g->vertices.size());
 	qs.push({MAX_CAPACITY,s});
 	qt.push({MAX_CAPACITY,t});
-	vs[s] = true;
-	vt[t] = true;
 	cs[s] = MAX_CAPACITY;
 	ct[t] = MAX_CAPACITY;
 	while(!qs.empty()&&!qt.empty()){
@@ -29,7 +28,9 @@ bool DijkstraBi::compute_path(){
 		qs.pop();
 		sui cit = qt.top().first;
 		sui it = qt.top().second;
-		qs.pop();
+		qt.pop();
+		vs[is] = true;
+		vt[it] = true;
 
 		if(vt[is]){
 			reconstruct_path(is,ps,pt,ds,dt);
@@ -41,53 +42,48 @@ bool DijkstraBi::compute_path(){
 		}
 
 		if(cis=cs[is]){
-			for(auto e:g->vertices[is].out_edges)
-				if(!vs[e->to->id]){
-					sui ec = e->u-x[e->id];
-					sui nc = min(ec,c[is]);
-					if(nc>cs[e->to->id]){
-						cs[e->to->id]=nc;
-						qs.push({nc,e->to->id});
-						ps[e->to->id] = e->id;
-						ds[e->to->id] = true;
-					}
+			for(auto e:g->vertices[is].out_edges){
+				sui ec = e->u-x[e->id];
+				sui nc = min(ec,cs[is]);
+				if(nc>cs[e->to->id]){
+					cs[e->to->id]=nc;
+					qs.push({nc,e->to->id});
+					ps[e->to->id] = e->id;
+					ds[e->to->id] = true;
 				}
-			for(auto e:g->vertices[is].in_edges)
-				if(!vs[e->from->id]){
-					sui ec = x[e->id];
-					sui nc = min(ec,cs[is]);
-					if(nc>cs[e->from->id]){
-						cs[e->from->id]=nc;
-						qs.push({nc,e->from->id});
-						ps[e->from->id] = e->id;
-						ds[e->from->id] = false;
-					}
+			}
+			for(auto e:g->vertices[is].in_edges){
+				sui ec = x[e->id];
+				sui nc = min(ec,cs[is]);
+				if(nc>cs[e->from->id]){
+					cs[e->from->id]=nc;
+					qs.push({nc,e->from->id});
+					ps[e->from->id] = e->id;
+					ds[e->from->id] = false;
 				}
+			}
 		}
 		if(cit=ct[it]){
-			for(auto e:g->vertices[is].out_edges)
-				if(!vs[e->to->id]){
-					sui ec = x[e->id];
-					sui nc = min(ec,ct[it]);
-					if(nc>ct[e->to->id]){
-						ct[e->to->id]=nc;
-						qt.push({nc,e->to->id});
-						pt[e->to->id] = e->id;
-						dt[e->to->id] = false;
-					}
-
+			for(auto e:g->vertices[it].out_edges){
+				sui ec = x[e->id];
+				sui nc = min(ec,ct[it]);
+				if(nc>ct[e->to->id]){
+					ct[e->to->id]=nc;
+					qt.push({nc,e->to->id});
+					pt[e->to->id] = e->id;
+					dt[e->to->id] = false;
 				}
-			for(auto e:g->vertices[is].in_edges)
-				if(!vs[e->from->id]){
-					sui ec = e->u-x[e->id];
-					sui nc = min(ec,ct[it]);
-					if(nc>c[e->from->id]){
-						ct[e->from->id]=nc;
-						qt.push({nc,e->to->id});
-						pt[e->from->id] = e->id;
-						dt[e->from->id] = true;
-					}
+			}
+			for(auto e:g->vertices[it].in_edges){
+				sui ec = e->u-x[e->id];
+				sui nc = min(ec,ct[it]);
+				if(nc>ct[e->from->id]){
+					ct[e->from->id]=nc;
+					qt.push({nc,e->from->id});
+					pt[e->from->id] = e->id;
+					dt[e->from->id] = true;
 				}
+			}
 		}
 	}
 	return false;

@@ -34,20 +34,21 @@ void run_benchmarks(){
 	for(auto density:densities)
 	for(auto n:sizes){
 		Graph g(n,density);
-		cout<<density<<","<<n<<","<<g.edges.size()<<",";
+		//cout<<density<<","<<n<<","<<g.edges.size()<<",";
 		for(sui i=0; i<4; i++){
-			cout<<time_tool(i,&g,0,n-1);
-			if(i<3)cout<<",";
+			time_tool(i,&g,0,n-1);
+			//cout<<time_tool(i,&g,0,n-1);
+			//if(i<3)cout<<",";
 		}
-		cout<<endl;
+		//cout<<endl;
 	}
 }
 
 ui time_tool(const ui i,Graph* g,const ui s,const ui t){
 	auto t1 = high_resolution_clock::now();
 	run_tool(i,g,s,t);
-    	auto t2 = high_resolution_clock::now();
-    	return (duration_cast<milliseconds>(t2 - t1)).count();
+	auto t2 = high_resolution_clock::now();
+	return (duration_cast<milliseconds>(t2 - t1)).count();
 }
 
 void run_tool(const sui i,Graph* g,const ui s,const ui t){

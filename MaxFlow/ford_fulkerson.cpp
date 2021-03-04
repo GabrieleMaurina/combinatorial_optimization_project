@@ -23,7 +23,7 @@ void FordFulkerson::run(){
 			else
 				x[path[i]->id] -= delta;
 	}
-	/*for(ui i=0;i<x.size();i++)
+	for(ui i=0;i<x.size();i++)
 	cout<<i<<" "<<(int)g->edges[i].u<<" "<<(int)g->edges[i].from->id<<" "<<(int)g->edges[i].to->id<<" "<<(int)x[i]<<endl;
-	cout<<endl<<endl;*/
+	cout<<endl<<endl;
 }

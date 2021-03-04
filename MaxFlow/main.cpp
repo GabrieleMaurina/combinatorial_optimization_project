@@ -16,10 +16,38 @@ using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
 
-//ui sizes[] = {10, 100, 1000, 2000, 3000, 4000};
-//f densities[] = {0.01, 0.05, 0.1};
-ui sizes[] = {10};
-f densities[] = {0.5};
+struct conf{
+	ui size;
+	f density;
+	ui delta;
+};
+
+conf configs[] = {
+	{1000, 0.01, 0},
+	{2000, 0.01, 0},
+	{3000, 0.01, 0},
+	{4000, 0.01, 0},
+	{1000, 0.05, 0},
+	{2000, 0.05, 0},
+	{3000, 0.05, 0},
+	{4000, 0.05, 0},
+	{1000, 0.1, 0},
+	{2000, 0.1, 0},
+	{3000, 0.1, 0},
+	{4000, 0.1, 0},
+	{1000, 0.8, 10},
+	{2000, 0.8, 10},
+	{3000, 0.8, 10},
+	{4000, 0.8, 10},
+	{1000, 0.8, 50},
+	{2000, 0.8, 50},
+	{3000, 0.8, 50},
+	{4000, 0.8, 50},
+	{1000, 0.8, 100},
+	{2000, 0.8, 100},
+	{3000, 0.8, 100},
+	{4000, 0.8, 100}
+};
 
 void run_benchmarks();
 void run_tool(const sui i,Graph* g,const ui s,const ui t);
@@ -30,17 +58,15 @@ int main(int argc, char**argv){
 }
 
 void run_benchmarks(){
-	cout<<"density,|V|,|E|,bfs,bfs_bi,dijkstra,dijkstra_bi"<<endl;
-	for(auto density:densities)
-	for(auto n:sizes){
-		Graph g(n,density);
-		//cout<<density<<","<<n<<","<<g.edges.size()<<",";
+	cout<<"delta,density,|V|,|E|,bfs,bfs_bi,dijkstra,dijkstra_bi"<<endl;
+	for(auto c:configs){
+		Graph g(c.size,c.density,c.delta);
+		cout<<c.delta<<","<<c.density<<","<<c.size<<","<<g.edges.size()<<",";
 		for(sui i=0; i<4; i++){
-			time_tool(i,&g,0,n-1);
-			//cout<<time_tool(i,&g,0,n-1);
-			//if(i<3)cout<<",";
+			cout<<time_tool(i,&g,0,c.size-1);
+			if(i<3)cout<<",";
 		}
-		//cout<<endl;
+		cout<<endl;
 	}
 }
 

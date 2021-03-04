@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <cassert>
 
 FordFulkerson::FordFulkerson(Graph* _g,const ui _s,const ui _t):g(_g),s(_s),t(_t),x(_g->edges.size(),0){}
 
@@ -20,13 +21,25 @@ void FordFulkerson::run(){
 			else
 				x[path[i]->id] -= delta;
 	}
+
+	//Test if output is admissible
+	test();
+}
+
+void FordFulkerson::test(){
+	//Print flow
 	//for(ui i=0;i<x.size();i++)
 	//cout<<i<<" "<<(int)g->edges[i].u<<" "<<(int)g->edges[i].from->id<<" "<<(int)g->edges[i].to->id<<" "<<(int)x[i]<<endl;
-	/*ui ts = 0;
+
+	ui ts = 0;
 	ui tt = 0;
 	for(ui i=0;i<x.size();i++){
 		if(g->edges[i].from->id==s) ts+=x[i];
 		if(g->edges[i].to->id==t) tt+=x[i];
+		assert(x[i]<=g->edges[i].u);
 	}
-	cout<<(int)ts<<" "<<(int)tt<<endl<<endl;*/
+	assert(ts==tt);
+
+	//Print total flow entering and exiting the graph
+	//cout<<endl<<"#"<<(int)ts<<","<<(int)tt<<"#"<<endl<<endl;
 }

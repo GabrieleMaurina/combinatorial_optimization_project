@@ -1,6 +1,5 @@
 #include "dijkstra_bi.h"
 #include "graph.h"
-#include "ford_fulkerson.h"
 
 #include <queue>
 #include <iostream>
@@ -24,10 +23,10 @@ bool DijkstraBi::compute_path(){
 	ct[t] = MAX_CAPACITY;
 	while(!qs.empty()&&!qt.empty()){
 		sui cis = qs.top().first;
-		sui is = qs.top().second;
+		ui is = qs.top().second;
 		qs.pop();
 		sui cit = qt.top().first;
-		sui it = qt.top().second;
+		ui it = qt.top().second;
 		qt.pop();
 		vs[is] = true;
 		vt[it] = true;

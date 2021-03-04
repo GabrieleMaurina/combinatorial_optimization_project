@@ -1,6 +1,5 @@
 #include "dijkstra.h"
 #include "graph.h"
-#include "ford_fulkerson.h"
 
 #include <queue>
 
@@ -15,7 +14,7 @@ bool Dijkstra::compute_path(){
 	c[s] = MAX_CAPACITY;
 	while(!q.empty()){
 		sui ci = q.top().first;
-		sui i = q.top().second;
+		ui i = q.top().second;
 		q.pop();
 		if(ci<c[i]) continue;
 		if(i==t){

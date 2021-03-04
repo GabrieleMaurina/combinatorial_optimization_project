@@ -43,7 +43,7 @@ struct Edge{
 struct Graph{
 	vector<Vertex> vertices;
 	vector<Edge> edges;
-	Graph(ui N,f density);
+	Graph(ui N,f density,ui delta=0);
 };
 
 #endif

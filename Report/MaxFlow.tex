@@ -16,62 +16,350 @@ The non-negative continuous variable $x_{ij}$ indicates the flow on the edge $(i
 \end{cases}
 \]
 
+\[0 \leq x_{ij} \leq u_{ij} \;\;\;\;\;\;\; \forall (i,j)\in E \]
+
 \subsection{Implementation}
+Ford-Fulkerson's algorithm solves the Max Flow problem. It's basic version uses BFS to find the shortest augmenting path. Its overall execution time is $O(nm^2)$.
+The project implements Ford-Fulkerson's algorithm in 4 variations: with BFS, with bidirectional BFS, with Dijkstra's algorithm to find the maximum capacity augmenting paths
+and with bidirectional Dijkstra's algorithm again to find the maximum capacity augmenting paths.
+The programming language used is again C++ because it offers great control over it's data structures and has a rich standard library.
+
+\subsection{Graph representation}
+The graph representation is the same as with the Shortest Path Problem with the exception that now each Vertex holds
+an array of outgoing edges as well as incoming ones. This is necessary because the algorithms used need to traverse said edges in both directions.
+
+The newly Vertex structure is:
+\begin{minted}{c++}
+struct Vertex{
+	ui id;
+	vector<Edge*> out_edges;
+	vector<Edge*> in_edges;
+};
+\end{minted}
+
+The graph generation is the same as with the Shortest Path Problem with the exception that now when
+creating an Edge it is also necessary to store it in the receiving Vertex.
+
+\subsection{Ford-Fulkerson's algorithm}
+Ford-Fulkerson algorithm is implemented in an abstract structure so that its variant can extend it and implement the virtual method
+to compute the augmenting path in the manner that they so choose. This way we can separate Ford-Fulkerson's algorithm from the other algorithms
+that find the augmenting path.
+
+The implementation is:
+\begin{minted}{c++}
+void FordFulkerson::run(){
+	while(compute_path()){
+		sui delta = 255;
+		for(ui i=0; i<path.size();i++)
+			if(path_dir[i] && path[i]->u-x[path[i]->id]<delta)
+				delta = path[i]->u-x[path[i]->id];
+			else if(!path_dir[i] && x[path[i]->id]<delta)
+				delta = x[path[i]->id];
+		for(ui i=0; i<path.size();i++)
+			if(path_dir[i])
+				x[path[i]->id] += delta;
+			else
+				x[path[i]->id] -= delta;
+	}
+}
+\end{minted}
+
+\subsection{Breadth First Search algorithm}
+BFS algorithm is used to find the shortest augmenting path in the graph. It's complexity is $O(m)$, since it visits all edges at most once.
+An array $visited$ is used to store whether a vertex has already been visited.
+An array $pred$ is used to store the predecessor of each vertex in a path from $s$ to $t$.
+An array $dir$ is used to store the direction of the path in the edge preceding each vertex.
+
+The implementation is:
+\begin{minted}{c++}
+bool Bfs::compute_path(){
+	path.clear();
+	path_dir.clear();
+	queue<ui> q;
+	vector<bool> visited(g->vertices.size(),false);
+	vector<ui> pred(g->vertices.size());
+	vector<bool> dir(g->vertices.size());
+	q.push(s);
+	visited[s] = true;
+	while(!q.empty()){
+		ui i = q.front();
+		q.pop();
+		if(i==t){
+			while(i!=s){
+				path.push_back(&g->edges[pred[i]]);
+				path_dir.push_back(dir[i]);
+				if(dir[i]) i = g->edges[pred[i]].from->id;
+				else i = g->edges[pred[i]].to->id;
+			}
+			return true;
+		}
+		for(auto e:g->vertices[i].out_edges)
+			if(!visited[e->to->id])
+			if(e->u-x[e->id]>0){
+				visited[e->to->id] = true;
+				q.push(e->to->id);
+				pred[e->to->id] = e->id;
+				dir[e->to->id] = true;
+
+			}
+		for(auto e:g->vertices[i].in_edges)
+			if(!visited[e->from->id])
+			if(x[e->id]>0){
+				visited[e->from->id] = true;
+				q.push(e->from->id);
+				pred[e->from->id] = e->id;
+				dir[e->from->id] = false;
+			}
+	}
+	return false;
+}
+\end{minted}
+
+\subsection{Bidirectional Breadth First Search algorithm}
+Bidirectional BFS algorithm is used to find the shortest augmenting path in the graph. It's complexity is $O(m)$, since it visits all edges at most once.
+At its core it is composed of two BFS algorithms that run in parallel, one starting from $s$ and one starting from $t$,
+and stopping only when they both have visited the same vertex. It generally runs faster than a simple BFS, but it requires double the space, indeed every
+data structure needs to be allocated twice.
+Two arrays $vs$ and $vt$ are used to store whether a vertex has already been visited respectively by the BFS starting in $s$ and the BFS starting in $t$.
+Two arrays $ps$ and $pt$ are used to store the predecessor of each vertex in a path from $s$ to itself
+respectively by the BFS starting in $s$ and the BFS starting in $t$.
+Two arrays $ds$ and $dt$ are used to store the direction of the path in the edge preceding each vertex
+respectively by the BFS starting in $s$ and the BFS starting in $t$.
+
+The implementation is:
+\begin{minted}{c++}
+bool BfsBi::compute_path(){
+	path.clear();
+	path_dir.clear();
+	queue<ui> qs;
+	queue<ui> qt;
+	vector<bool> vs(g->vertices.size(),false);
+	vector<bool> vt(g->vertices.size(),false);
+	vector<ui> ps(g->vertices.size());
+	vector<ui> pt(g->vertices.size());
+	vector<bool> ds(g->vertices.size());
+	vector<bool> dt(g->vertices.size());
+	qs.push(s);
+	qt.push(t);
+	vs[s] = true;
+	vt[t] = true;
+	while(!qs.empty()&&!qt.empty()){
+		ui is = qs.front();
+		ui it = qt.front();
+		qs.pop();
+		qt.pop();
+		if(vt[is]){
+			reconstruct_path(is,ps,pt,ds,dt);
+			return true;
+		}
+		if(vs[it]){
+			reconstruct_path(it,ps,pt,ds,dt);
+			return true;
+		}
+		for(auto e:g->vertices[is].out_edges)
+			if(!vs[e->to->id])
+			if(e->u-x[e->id]>0){
+				vs[e->to->id] = true;
+				qs.push(e->to->id);
+				ps[e->to->id] = e->id;
+				ds[e->to->id] = true;
+
+			}
+		for(auto e:g->vertices[is].in_edges)
+			if(!vs[e->from->id])
+			if(x[e->id]>0){
+				vs[e->from->id] = true;
+				qs.push(e->from->id);
+				ps[e->from->id] = e->id;
+				ds[e->from->id] = false;
+			}
+		for(auto e:g->vertices[it].out_edges)
+			if(!vt[e->to->id])
+			if(x[e->id]>0){
+				vt[e->to->id] = true;
+				qt.push(e->to->id);
+				pt[e->to->id] = e->id;
+				dt[e->to->id] = false;
+			}
+		for(auto e:g->vertices[it].in_edges)
+			if(!vt[e->from->id])
+			if(e->u-x[e->id]>0){
+				vt[e->from->id] = true;
+				qt.push(e->from->id);
+				pt[e->from->id] = e->id;
+				dt[e->from->id] = true;
+			}
+	}
+	return false;
+}
+\end{minted}
+
+\subsection{Dijkstra's algorithm}
+A variation of Dijkstra's algorithm for the shortest path is used in this project to compute the maximum capacity augmenting path.
+Dijkstra's algorithm in its optimal form using a priority queue runs in $O(m\log n)$. The implementation used in this project does use a priority queue,
+however it does not decrease the key of vertices already inside said queue, instead it simply adds another entry. This simplifies the implementation of the queue.
+An array $c$ is used to store maximum residual capacity going through each vertex.
+An array $pred$ is used to store the predecessor of each vertex in a path from $s$ to $t$.
+An array $dir$ is used to store the direction of the path in the edge preceding each vertex.
+
+The implementation is:
+\begin{minted}{c++}
+bool Dijkstra::compute_path(){
+	path.clear();
+	path_dir.clear();
+	priority_queue<pair<sui,ui>> q;
+	vector<sui> c(g->vertices.size(),0);
+	vector<ui> pred(g->vertices.size());
+	vector<bool> dir(g->vertices.size());
+	q.push({MAX_CAPACITY,s});
+	c[s] = MAX_CAPACITY;
+	while(!q.empty()){
+		sui ci = q.top().first;
+		ui i = q.top().second;
+		q.pop();
+		if(ci<c[i]) continue;
+		if(i==t){
+			while(i!=s){
+				path.push_back(&g->edges[pred[i]]);
+				path_dir.push_back(dir[i]);
+				if(dir[i]) i = g->edges[pred[i]].from->id;
+				else i = g->edges[pred[i]].to->id;
+			}
+			return true;
+		}
+		for(auto e:g->vertices[i].out_edges){
+			sui ec = e->u-x[e->id];
+			sui nc = min(ec,c[i]);
+			if(nc>c[e->to->id]){
+				c[e->to->id]=nc;
+				q.push({nc,e->to->id});
+				pred[e->to->id] = e->id;
+				dir[e->to->id] = true;
+			}
+		}
+		for(auto e:g->vertices[i].in_edges){
+			sui ec = x[e->id];
+			sui nc = min(ec,c[i]);
+			if(nc>c[e->from->id]){
+				c[e->from->id]=nc;
+				q.push({nc,e->from->id});
+				pred[e->from->id] = e->id;
+				dir[e->from->id] = false;
+			}
+		}
+	}
+	return false;
+}
+\end{minted}
+
+\subsection{Bidirectional Dijkstra's algorithm}
+A bidirectional Dijkstra's algorithm is used in this project to compute the maximum capacity augmenting path. Its complexity is the same as normal Dijkstra.
+Indeed at its core it is composed of two Dijkstra's algorithms that run in parallel, one starting from $s$ and one starting from $t$,
+and stopping only when they both have visited the same vertex. It generally runs faster than a simple Dijkstra's algorithm, but it requires double the space, indeed every
+data structure needs to be allocated twice.
+Two arrays $vs$ and $vt$ are used to store whether a vertex has already been visited respectively by the algorithm starting in $s$ and the algorithm starting in $t$.
+Two arrays $cs$ and $ct$ are used to store maximum residual capacity going through each vertex respectively by the algorithm starting in $s$ and the algorithm starting in $t$.
+Two arrays $ps$ and $pt$ are used to store the predecessor of each vertex in a path from $s$ to $t$ respectively by the algorithm starting in $s$ and the algorithm starting in $t$.
+Two arrays $ds$ and $dt$ are used to store the direction of the path in the edge preceding each vertex respectively by the algorithm starting in $s$ and the algorithm starting in $t$.
+
+The implementation is:
+\begin{minted}{c++}
+bool DijkstraBi::compute_path(){
+	path.clear();
+	path_dir.clear();
+	priority_queue<pair<sui,ui>> qs;
+	priority_queue<pair<sui,ui>> qt;
+	vector<sui> cs(g->vertices.size(),0);
+	vector<sui> ct(g->vertices.size(),0);
+	vector<bool> vs(g->vertices.size(),false);
+	vector<bool> vt(g->vertices.size(),false);
+	vector<ui> ps(g->vertices.size());
+	vector<ui> pt(g->vertices.size());
+	vector<bool> ds(g->vertices.size());
+	vector<bool> dt(g->vertices.size());
+	qs.push({MAX_CAPACITY,s});
+	qt.push({MAX_CAPACITY,t});
+	cs[s] = MAX_CAPACITY;
+	ct[t] = MAX_CAPACITY;
+	while(!qs.empty()&&!qt.empty()){
+		sui cis = qs.top().first;
+		ui is = qs.top().second;
+		qs.pop();
+		sui cit = qt.top().first;
+		ui it = qt.top().second;
+		qt.pop();
+		vs[is] = true;
+		vt[it] = true;
+
+		if(vt[is]){
+			reconstruct_path(is,ps,pt,ds,dt);
+			return true;
+		}
+		if(vs[it]){
+			reconstruct_path(it,ps,pt,ds,dt);
+			return true;
+		}
+
+		if(cis=cs[is]){
+			for(auto e:g->vertices[is].out_edges){
+				sui ec = e->u-x[e->id];
+				sui nc = min(ec,cs[is]);
+				if(nc>cs[e->to->id]){
+					cs[e->to->id]=nc;
+					qs.push({nc,e->to->id});
+					ps[e->to->id] = e->id;
+					ds[e->to->id] = true;
+				}
+			}
+			for(auto e:g->vertices[is].in_edges){
+				sui ec = x[e->id];
+				sui nc = min(ec,cs[is]);
+				if(nc>cs[e->from->id]){
+					cs[e->from->id]=nc;
+					qs.push({nc,e->from->id});
+					ps[e->from->id] = e->id;
+					ds[e->from->id] = false;
+				}
+			}
+		}
+		if(cit=ct[it]){
+			for(auto e:g->vertices[it].out_edges){
+				sui ec = x[e->id];
+				sui nc = min(ec,ct[it]);
+				if(nc>ct[e->to->id]){
+					ct[e->to->id]=nc;
+					qt.push({nc,e->to->id});
+					pt[e->to->id] = e->id;
+					dt[e->to->id] = false;
+				}
+			}
+			for(auto e:g->vertices[it].in_edges){
+				sui ec = e->u-x[e->id];
+				sui nc = min(ec,ct[it]);
+				if(nc>ct[e->from->id]){
+					ct[e->from->id]=nc;
+					qt.push({nc,e->from->id});
+					pt[e->from->id] = e->id;
+					dt[e->from->id] = true;
+				}
+			}
+		}
+	}
+	return false;
+}
+\end{minted}
 
 \subsection{Results}
+The previously discussed algorithms are evaluated in order to test their efficiency w.r.t execution time. All experiments are conducted on
+a laptop running Fedora Workstation 32 with an Intel® Core™ i7-2670QM CPU @ 2.20GHz×8 and 6 GB of ram.
+The evaluation is performed on large graphs with up to 4thousands vertices and 1.6 million edges. Different levels of density and delta are used.
+Table \ref{table:mf} summarizes the results obtained.
 
-\begin{table}[]
-\begin{tabular}{llllllll}
-delta & density & $|V|$  & $|E|$ & bfs    & bfs\_bi & dijkstra & dijkstra\_bi \\ \hline
-0     & 0.01    & 1000 & 9904    & 17     & 1       & 14       & 2            \\
-0     & 0.01    & 2000 & 39951   & 192    & 8       & 46       & 10           \\
-0     & 0.01    & 3000 & 89629   & 679    & 23      & 149      & 20           \\
-0     & 0.01    & 4000 & 160320  & 2279   & 52      & 862      & 53           \\
-0     & 0.05    & 1000 & 50371   & 471    & 25      & 97       & 23           \\
-0     & 0.05    & 2000 & 199272  & 5341   & 172     & 1769     & 98           \\
-0     & 0.05    & 3000 & 450017  & 22678  & 425     & 3101     & 248          \\
-0     & 0.05    & 4000 & 799392  & 60093  & 923     & 18611    & 629          \\
-0     & 0.1     & 1000 & 99926   & 2038   & 92      & 797      & 71           \\
-0     & 0.1     & 2000 & 400840  & 25488  & 443     & 6703     & 309          \\
-0     & 0.1     & 3000 & 897988  & 101777 & 1076    & 14265    & 747          \\
-0     & 0.1     & 4000 & 1598115 & 273573 & 2202    & 66067    & 1711         \\
-10    & 0.8     & 1000 & 15894   & 421    & 424     & 26       & 13           \\
-10    & 0.8     & 2000 & 32085   & 1023   & 1070    & 17       & 20           \\
-10    & 0.8     & 3000 & 47694   & 1128   & 1130    & 25       & 30           \\
-10    & 0.8     & 4000 & 63956   & 2136   & 2183    & 165      & 87           \\
-50    & 0.8     & 1000 & 78045   & 3331   & 3234    & 70       & 42           \\
-50    & 0.8     & 2000 & 157841  & 11794  & 11701   & 63       & 69           \\
-50    & 0.8     & 3000 & 238410  & 30368  & 29734   & 471      & 166          \\
-50    & 0.8     & 4000 & 318378  & 42911  & 44485   & 1396     & 237          \\
-100   & 0.8     & 1000 & 151990  & 9369   & 7343    & 578      & 125          \\
-100   & 0.8     & 2000 & 311963  & 36788  & 34126   & 2021     & 174          \\
-100   & 0.8     & 3000 & 472190  & 70093  & 64804   & 3023     & 274          \\
-100   & 0.8     & 4000 & 632013  & 122896 & 115424  & 4036     & 359
-\end{tabular}
-\caption{Max Flow Problem algorithms comparison}\label{table:mf}
-\end{table}
+Figures \ref{fig:mf1},\ref{fig:mf2} and \ref{fig:mf3} show the execution time of the algorithms
+with graphs of delta=0 and increasing size and density.
+The bidirectional algorithms are fastest, followed by Dijkstra's algorithm. Monodirectional BFS is by far the slowest.
 
-\begin{figure}
-\includegraphics[width=\textwidth]{fig7}
-\caption{density=0.01}\label{fig:mf1}
-\end{figure}
-\begin{figure}
-\includegraphics[width=\textwidth]{fig8}
-\caption{density=0.05}\label{fig:mf2}
-\end{figure}
-\begin{figure}
-\includegraphics[width=\textwidth]{fig9}
-\caption{density=0.1}\label{fig:mf3}
-\end{figure}
-\begin{figure}
-\includegraphics[width=\textwidth]{fig10}
-\caption{delta=10}\label{fig:mf4}
-\end{figure}
-\begin{figure}
-\includegraphics[width=\textwidth]{fig11}
-\caption{delta=50}\label{fig:mf5}
-\end{figure}
-\begin{figure}
-\includegraphics[width=\textwidth]{fig12}
-\caption{delta=100}\label{fig:mf6}
-\end{figure}
+Figures \ref{fig:mf4},\ref{fig:mf5} and \ref{fig:mf6} show the execution time of the algorithms
+with graphs of density=0.8 and increasing size and delta. This variant of graph has on average a longer shortest path from $s$ to $t$.
+Both Dijkstra's algorithms are consistently fastest and conversely both BFS algorithms are consistently slowest.
+In both cases the bidirectional version seems to have a slight edge over its monodirectional counterpart.

@@ -1,0 +1,111 @@
+\begin{table}[p]
+\begin{tabular}{lllllll}
+delta & density & $|V| $& $|E|$  & dijkstra & bellman\_ford & moore \\ \hline
+0     & 0.01    & 1000 & 9934    & 36       & 207           & 2     \\
+0     & 0.01    & 2000 & 39924   & 140      & 1656          & 7     \\
+0     & 0.01    & 3000 & 90086   & 317      & 5630          & 17    \\
+0     & 0.01    & 4000 & 160679  & 562      & 13479         & 27    \\
+0     & 0.05    & 1000 & 50087   & 37       & 1028          & 4     \\
+0     & 0.05    & 2000 & 200945  & 148      & 8395          & 22    \\
+0     & 0.05    & 3000 & 449742  & 336      & 28859         & 60    \\
+0     & 0.05    & 4000 & 798221  & 582      & 68454         & 91    \\
+0     & 0.1     & 1000 & 100254  & 39       & 2066          & 11    \\
+0     & 0.1     & 2000 & 399959  & 155      & 17008         & 38    \\
+0     & 0.1     & 3000 & 900183  & 338      & 57717         & 66    \\
+0     & 0.1     & 4000 & 1600469 & 595      & 137566        & 102   \\
+10    & 0.8     & 1000 & 15848   & 31       & 323           & 10    \\
+10    & 0.8     & 2000 & 31954   & 125      & 1306          & 55    \\
+10    & 0.8     & 3000 & 47744   & 279      & 2923          & 139   \\
+10    & 0.8     & 4000 & 63882   & 496      & 5223          & 288   \\
+50    & 0.8     & 1000 & 77943   & 35       & 1611          & 6     \\
+50    & 0.8     & 2000 & 157870  & 133      & 6470          & 34    \\
+50    & 0.8     & 3000 & 237856  & 293      & 14795         & 69    \\
+50    & 0.8     & 4000 & 318184  & 514      & 26621         & 139   \\
+100   & 0.8     & 1000 & 151970  & 41       & 3116          & 13    \\
+100   & 0.8     & 2000 & 311629  & 151      & 13078         & 42    \\
+100   & 0.8     & 3000 & 471814  & 329      & 29715         & 71    \\
+100   & 0.8     & 4000 & 631519  & 573      & 53171         & 144
+\end{tabular}
+\caption{Shortest Path Problem algorithms comparison}\label{table:spp}
+\end{table}
+
+\begin{figure}[p]
+\includegraphics[width=\textwidth]{fig1}
+\caption{density=0.01}\label{fig:spp1}
+\end{figure}
+\begin{figure}[p]
+\includegraphics[width=\textwidth]{fig2}
+\caption{density=0.05}\label{fig:spp2}
+\end{figure}
+\begin{figure}[p]
+\includegraphics[width=\textwidth]{fig3}
+\caption{density=0.1}\label{fig:spp3}
+\end{figure}
+\begin{figure}[p]
+\includegraphics[width=\textwidth]{fig4}
+\caption{delta=10}\label{fig:spp4}
+\end{figure}
+\begin{figure}[p]
+\includegraphics[width=\textwidth]{fig5}
+\caption{delta=50}\label{fig:spp5}
+\end{figure}
+\begin{figure}[p]
+\includegraphics[width=\textwidth]{fig6}
+\caption{delta=100}\label{fig:spp6}
+\end{figure}
+
+\begin{table}[p]
+\begin{tabular}{llllllll}
+delta & density & $|V|$  & $|E|$ & bfs    & bfs\_bi & dijkstra & dijkstra\_bi \\ \hline
+0     & 0.01    & 1000 & 9904    & 17     & 1       & 14       & 2            \\
+0     & 0.01    & 2000 & 39951   & 192    & 8       & 46       & 10           \\
+0     & 0.01    & 3000 & 89629   & 679    & 23      & 149      & 20           \\
+0     & 0.01    & 4000 & 160320  & 2279   & 52      & 862      & 53           \\
+0     & 0.05    & 1000 & 50371   & 471    & 25      & 97       & 23           \\
+0     & 0.05    & 2000 & 199272  & 5341   & 172     & 1769     & 98           \\
+0     & 0.05    & 3000 & 450017  & 22678  & 425     & 3101     & 248          \\
+0     & 0.05    & 4000 & 799392  & 60093  & 923     & 18611    & 629          \\
+0     & 0.1     & 1000 & 99926   & 2038   & 92      & 797      & 71           \\
+0     & 0.1     & 2000 & 400840  & 25488  & 443     & 6703     & 309          \\
+0     & 0.1     & 3000 & 897988  & 101777 & 1076    & 14265    & 747          \\
+0     & 0.1     & 4000 & 1598115 & 273573 & 2202    & 66067    & 1711         \\
+10    & 0.8     & 1000 & 15894   & 421    & 424     & 26       & 13           \\
+10    & 0.8     & 2000 & 32085   & 1023   & 1070    & 17       & 20           \\
+10    & 0.8     & 3000 & 47694   & 1128   & 1130    & 25       & 30           \\
+10    & 0.8     & 4000 & 63956   & 2136   & 2183    & 165      & 87           \\
+50    & 0.8     & 1000 & 78045   & 3331   & 3234    & 70       & 42           \\
+50    & 0.8     & 2000 & 157841  & 11794  & 11701   & 63       & 69           \\
+50    & 0.8     & 3000 & 238410  & 30368  & 29734   & 471      & 166          \\
+50    & 0.8     & 4000 & 318378  & 42911  & 44485   & 1396     & 237          \\
+100   & 0.8     & 1000 & 151990  & 9369   & 7343    & 578      & 125          \\
+100   & 0.8     & 2000 & 311963  & 36788  & 34126   & 2021     & 174          \\
+100   & 0.8     & 3000 & 472190  & 70093  & 64804   & 3023     & 274          \\
+100   & 0.8     & 4000 & 632013  & 122896 & 115424  & 4036     & 359
+\end{tabular}
+\caption{Max Flow Problem algorithms comparison}\label{table:mf}
+\end{table}
+
+\begin{figure}[p]
+\includegraphics[width=\textwidth]{fig7}
+\caption{density=0.01}\label{fig:mf1}
+\end{figure}
+\begin{figure}[p]
+\includegraphics[width=\textwidth]{fig8}
+\caption{density=0.05}\label{fig:mf2}
+\end{figure}
+\begin{figure}[p]
+\includegraphics[width=\textwidth]{fig9}
+\caption{density=0.1}\label{fig:mf3}
+\end{figure}
+\begin{figure}[p]
+\includegraphics[width=\textwidth]{fig10}
+\caption{delta=10}\label{fig:mf4}
+\end{figure}
+\begin{figure}[p]
+\includegraphics[width=\textwidth]{fig11}
+\caption{delta=50}\label{fig:mf5}
+\end{figure}
+\begin{figure}[p]
+\includegraphics[width=\textwidth]{fig12}
+\caption{delta=100}\label{fig:mf6}
+\end{figure}

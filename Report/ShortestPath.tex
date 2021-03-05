@@ -151,68 +151,12 @@ a laptop running Fedora Workstation 32 with an Intel® Core™ i7-2670QM CPU @ 2
 The evaluation is performed on large graphs with up to 4thousands vertices and 1.6 million edges. Different levels of density and delta are used.
 Table \ref{table:spp} summarizes the results obtained.
 
-\begin{table}[]
-\begin{tabular}{lllllll}
-delta & density & $|V| $& $|E|$  & dijkstra & bellman\_ford & moore \\ \hline
-0     & 0.01    & 1000 & 9934    & 36       & 207           & 2     \\
-0     & 0.01    & 2000 & 39924   & 140      & 1656          & 7     \\
-0     & 0.01    & 3000 & 90086   & 317      & 5630          & 17    \\
-0     & 0.01    & 4000 & 160679  & 562      & 13479         & 27    \\
-0     & 0.05    & 1000 & 50087   & 37       & 1028          & 4     \\
-0     & 0.05    & 2000 & 200945  & 148      & 8395          & 22    \\
-0     & 0.05    & 3000 & 449742  & 336      & 28859         & 60    \\
-0     & 0.05    & 4000 & 798221  & 582      & 68454         & 91    \\
-0     & 0.1     & 1000 & 100254  & 39       & 2066          & 11    \\
-0     & 0.1     & 2000 & 399959  & 155      & 17008         & 38    \\
-0     & 0.1     & 3000 & 900183  & 338      & 57717         & 66    \\
-0     & 0.1     & 4000 & 1600469 & 595      & 137566        & 102   \\
-10    & 0.8     & 1000 & 15848   & 31       & 323           & 10    \\
-10    & 0.8     & 2000 & 31954   & 125      & 1306          & 55    \\
-10    & 0.8     & 3000 & 47744   & 279      & 2923          & 139   \\
-10    & 0.8     & 4000 & 63882   & 496      & 5223          & 288   \\
-50    & 0.8     & 1000 & 77943   & 35       & 1611          & 6     \\
-50    & 0.8     & 2000 & 157870  & 133      & 6470          & 34    \\
-50    & 0.8     & 3000 & 237856  & 293      & 14795         & 69    \\
-50    & 0.8     & 4000 & 318184  & 514      & 26621         & 139   \\
-100   & 0.8     & 1000 & 151970  & 41       & 3116          & 13    \\
-100   & 0.8     & 2000 & 311629  & 151      & 13078         & 42    \\
-100   & 0.8     & 3000 & 471814  & 329      & 29715         & 71    \\
-100   & 0.8     & 4000 & 631519  & 573      & 53171         & 144
-\end{tabular}
-\caption{Shortest Path Problem algorithms comparison}\label{table:spp}
-\end{table}
-
-Figures \ref{fig:spp1},\ref{fig:spp2} and \ref{fig:spp3} shows the execution time of the algorithms
+Figures \ref{fig:spp1},\ref{fig:spp2} and \ref{fig:spp3} show the execution time of the algorithms
 with graphs of delta=0 and increasing size and density.
 Moore's algorithm is fastest, followed by Dijkstra's algorithm. Bellman-Ford's algorithm is by far the slowest.
 
-Figures \ref{fig:spp4},\ref{fig:spp5} and \ref{fig:spp6} shows the execution time of the algorithms
+Figures \ref{fig:spp4},\ref{fig:spp5} and \ref{fig:spp6} show the execution time of the algorithms
 with graphs of density=0.8 and increasing size and delta.
 Moore's algorithm is fastest, followed by Dijkstra's algorithm. Bellman-Ford's algorithm is by far the slowest.
 
-The results obtained are consitent across all kinds of graphs tested.
-
-\begin{figure}
-\includegraphics[width=\textwidth]{fig1}
-\caption{density=0.01}\label{fig:spp1}
-\end{figure}
-\begin{figure}
-\includegraphics[width=\textwidth]{fig2}
-\caption{density=0.05}\label{fig:spp2}
-\end{figure}
-\begin{figure}
-\includegraphics[width=\textwidth]{fig3}
-\caption{density=0.1}\label{fig:spp3}
-\end{figure}
-\begin{figure}
-\includegraphics[width=\textwidth]{fig4}
-\caption{delta=10}\label{fig:spp4}
-\end{figure}
-\begin{figure}
-\includegraphics[width=\textwidth]{fig5}
-\caption{delta=50}\label{fig:spp5}
-\end{figure}
-\begin{figure}
-\includegraphics[width=\textwidth]{fig6}
-\caption{delta=100}\label{fig:spp6}
-\end{figure}
+The results obtained are consistent across all kinds of graphs tested.

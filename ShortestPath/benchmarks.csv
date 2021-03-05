@@ -1,4 +1,4 @@
-delta,density,|V|,|E|,dijkstra,bellan_ford,moore
+delta,density,|V|,|E|,dijkstra,bellman_ford,moore
 0,0.01,1000,9934,36,207,2
 0,0.01,2000,39924,140,1656,7
 0,0.01,3000,90086,317,5630,17

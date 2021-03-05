@@ -1,0 +1,218 @@
+\section{Shortest Path}
+\subsection{Problem}
+Given a directed graph $G=\{V,E\}$, where $V$ is the set of vertices, $E$ is the set of edges, $n=||V|$ and $m=|E|$.
+Let $s \in V$ be the source and let $c: E \to \mathbb{R}$ be a cost function.
+\vspace{1em}\\
+\textbf{Shortest Path Problem:} find all minimum cost paths from $s$ to all vertices in $V$.
+
+\subsection{Implementation}
+There exist several algorithms to solve this problem. The algorithms implemented and tested are Dijkstra's algorithm, Bellman-Ford's algorithm and Moore's algorithm.
+The programming language used is C++ because it offers great control over it's data structures and has a rich standard library.
+
+\subsection{Graph representation}
+In order to execute any algorithm for the Shortest Path Problem it is necessary to have a data structure to represent a graph.
+For simplicity of implementation and to save space, an out-star representation is used.
+Three structures are used: Graph, Vertex and Edge. Where Graph contains an array of Vertex and an array of Edge, each Vertex contains an array of the out going Edge
+and each Edge contains a reference to the Vertex it comes from, a reference to the Vertex it goes to and its cost. For simplicity the cost is stored as an 8 bit
+unsigned integer, i.e. only positive costs are allowed. Both Vertex and Edge contain a field id,
+which is their position in the array in the graph. This representation saves space when the graph is sparse, compared to an adjacency matrix.
+
+The structures used are:
+\begin{minted}{c++}
+struct Vertex{
+	ui id;
+	vector<Edge*> edges;
+};
+
+struct Edge{
+	ui id;
+	sui cost;
+	Vertex* from;
+	Vertex* to;
+	Edge(ui _id,sui _cost,Vertex* _from,Vertex* _to);
+};
+
+struct Graph{
+	vector<Vertex> vertices;
+	vector<Edge> edges;
+	Graph(ui N,f density,ui delta=0);
+};
+\end{minted}
+Where $s$ is always the first Vertex.
+
+The graph is generated randomly given size, density and delta, according to the following pseudocode:
+\begin{minted}{python}
+create array of vertices of size size;
+for each vertex v1:
+    for each vertex v2:
+        if delta = 0 or abs(v1.id-v2.id) <= delta:
+            if rand_float(0,1) < density:
+                create an edge with random cost between v1 and v2;
+\end{minted}
+Delta represents the maximum difference in id between vertices. When delta is zero it is discarded. Delta is necessary if we want to create a
+certain kind of graph, i.e. one whose shortest path between first and last vertex has many edges. Density is the density of the graph, only when delta is zero.
+
+\subsection{Dijkstra's algorithm}
+Dijkstra's algorithm is implemented in its simplest form with an array, (no priority queue). Hence its execution time is $O(n^2)$.
+An array $cost$ is used to store the distance from $s$ to every vertex.
+An array $pred$ is used to store the predecessor of each vertex in a path with minimum cost from $s$ to itself.
+An array $flag$ is used to store whether a path of minimum cost to a vertex has been found.
+
+The implementation is:
+\begin{minted}{c++}
+void dijkstra(const Graph& g,const ui s){
+	const ui N = g.vertices.size();
+	vector<ui> cost(N,INF);
+	vector<ui> pred(N,s);
+	vector<bool> flag(N,false);
+	cost[s] = 0;
+	for(ui i=0;i<N;i++){
+		ui cmin = INF;
+		ui idmin = 0;
+		for(ui j=0;j<N;j++)
+		if(!flag[j]&&cost[j]<cmin){
+			idmin = j;
+			cmin = cost[j];
+		}
+		flag[idmin] = true;
+		for(auto e:g.vertices[idmin].edges)
+		if(!flag[e->to->id])
+		if(cost[idmin]+e->cost<cost[e->to->id]){
+			cost[e->to->id] = cost[idmin]+e->cost;
+			pred[e->to->id] = idmin;
+		}
+	}
+}
+\end{minted}
+
+\subsection{Bellman-Ford's algorithm}
+Bellman-Ford's algorithm loops $|V|$ times over the entire Edge array. Hence its execution time is $O(nm)$.
+An array $cost$ is used to store the distance from $s$ to every vertex.
+An array $pred$ is used to store the predecessor of each vertex in a path with minimum cost from $s$ to itself.
+
+The implementation is:
+\begin{minted}{c++}
+void bellman_ford(const Graph& g,const ui s){
+	const ui N = g.vertices.size();
+	vector<ui> cost(N,INF);
+	vector<ui> pred(N,s);
+	cost[s] = 0;
+	for(ui i=1;i<N;i++)
+	for(auto e:g.edges)
+	if(cost[e.from->id]+e.cost<cost[e.to->id]){
+		cost[e.to->id] = cost[e.from->id]+e.cost;
+		pred[e.to->id] = e.from->id;
+	}
+}
+\end{minted}
+
+\subsection{Moore's algorithm}
+Moore's algorithm is implemented with a FIFO queue. Its execution time is $O(nm)$.
+The FIFO queue is implemented combinig a queue and a set for $O(1)$ lookup. Its structure is:
+\begin{minted}{c++}
+struct MooreFifoQueue{
+	queue<ui> q;
+	unordered_set<ui> us;
+	void push(const ui value);
+	ui pop();
+	bool empty();
+	bool contains(const ui value);
+};
+\end{minted}
+
+An array $cost$ is used to store the distance from $s$ to every vertex.
+An array $pred$ is used to store the predecessor of each vertex in a path with minimum cost from $s$ to itself.
+
+The implementation of Moore's algorithm is:
+\begin{minted}{c++}
+void moore(const Graph& g,const ui s){
+	const ui N = g.vertices.size();
+	vector<ui> cost(N,INF);
+	vector<ui> pred(N,s);
+	cost[s] = 0;
+	MooreFifoQueue q;
+	q.push(s);
+	while(!q.empty()){
+		ui i = q.pop();
+		for(auto e:g.vertices[i].edges)
+		if(cost[i]+e->cost<cost[e->to->id]){
+			cost[e->to->id] = cost[i]+e->cost;
+			pred[e->to->id] = i;
+			if(!q.contains(e->to->id))
+			q.push(e->to->id);
+		}
+	}
+}
+\end{minted}
+
+\subsection{Results}
+The three previously discussed algorithms are evaluated in order to test their efficiency w.r.t execution time. All experiments are conducted on
+a laptop running Fedora Workstation 32 with an Intel® Core™ i7-2670QM CPU @ 2.20GHz×8 and 6 GB of ram.
+The evaluation is performed on large graphs with up to 4thousands vertices and 1.6 million edges. Different levels of density and delta are used.
+Table \ref{table:spp} summarizes the results obtained.
+
+\begin{table}[]
+\begin{tabular}{lllllll}
+delta & density & $|V| $& $|E|$  & dijkstra & bellman\_ford & moore \\ \hline
+0     & 0.01    & 1000 & 9934    & 36       & 207           & 2     \\
+0     & 0.01    & 2000 & 39924   & 140      & 1656          & 7     \\
+0     & 0.01    & 3000 & 90086   & 317      & 5630          & 17    \\
+0     & 0.01    & 4000 & 160679  & 562      & 13479         & 27    \\
+0     & 0.05    & 1000 & 50087   & 37       & 1028          & 4     \\
+0     & 0.05    & 2000 & 200945  & 148      & 8395          & 22    \\
+0     & 0.05    & 3000 & 449742  & 336      & 28859         & 60    \\
+0     & 0.05    & 4000 & 798221  & 582      & 68454         & 91    \\
+0     & 0.1     & 1000 & 100254  & 39       & 2066          & 11    \\
+0     & 0.1     & 2000 & 399959  & 155      & 17008         & 38    \\
+0     & 0.1     & 3000 & 900183  & 338      & 57717         & 66    \\
+0     & 0.1     & 4000 & 1600469 & 595      & 137566        & 102   \\
+10    & 0.8     & 1000 & 15848   & 31       & 323           & 10    \\
+10    & 0.8     & 2000 & 31954   & 125      & 1306          & 55    \\
+10    & 0.8     & 3000 & 47744   & 279      & 2923          & 139   \\
+10    & 0.8     & 4000 & 63882   & 496      & 5223          & 288   \\
+50    & 0.8     & 1000 & 77943   & 35       & 1611          & 6     \\
+50    & 0.8     & 2000 & 157870  & 133      & 6470          & 34    \\
+50    & 0.8     & 3000 & 237856  & 293      & 14795         & 69    \\
+50    & 0.8     & 4000 & 318184  & 514      & 26621         & 139   \\
+100   & 0.8     & 1000 & 151970  & 41       & 3116          & 13    \\
+100   & 0.8     & 2000 & 311629  & 151      & 13078         & 42    \\
+100   & 0.8     & 3000 & 471814  & 329      & 29715         & 71    \\
+100   & 0.8     & 4000 & 631519  & 573      & 53171         & 144
+\end{tabular}
+\caption{Shortest Path Problem algorithms comparison}\label{table:spp}
+\end{table}
+
+Figures \ref{fig:spp1},\ref{fig:spp2} and \ref{fig:spp3} shows the execution time of the algorithms
+with graphs of delta=0 and increasing size and density.
+Moore's algorithm is fastest, followed by Dijkstra's algorithm. Bellman-Ford's algorithm is by far the slowest.
+
+Figures \ref{fig:spp4},\ref{fig:spp5} and \ref{fig:spp6} shows the execution time of the algorithms
+with graphs of density=0.8 and increasing size and delta.
+Moore's algorithm is fastest, followed by Dijkstra's algorithm. Bellman-Ford's algorithm is by far the slowest.
+
+The results obtained are consitent across all kinds of graphs tested.
+
+\begin{figure}
+\includegraphics[width=\textwidth]{fig1}
+\caption{density=0.01}\label{fig:spp1}
+\end{figure}
+\begin{figure}
+\includegraphics[width=\textwidth]{fig2}
+\caption{density=0.05}\label{fig:spp2}
+\end{figure}
+\begin{figure}
+\includegraphics[width=\textwidth]{fig3}
+\caption{density=0.1}\label{fig:spp3}
+\end{figure}
+\begin{figure}
+\includegraphics[width=\textwidth]{fig4}
+\caption{delta=10}\label{fig:spp4}
+\end{figure}
+\begin{figure}
+\includegraphics[width=\textwidth]{fig5}
+\caption{delta=50}\label{fig:spp5}
+\end{figure}
+\begin{figure}
+\includegraphics[width=\textwidth]{fig6}
+\caption{delta=100}\label{fig:spp6}
+\end{figure}

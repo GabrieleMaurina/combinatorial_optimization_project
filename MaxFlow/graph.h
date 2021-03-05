@@ -3,7 +3,7 @@
 
 /*
 This graph implementation is good for low density graphs. If we wanted
-to use high denisty graphs an adiaciency matrix would be better. If we
+to use high denisty graphs an adjacency matrix would be better. If we
 wanted to use very sparse graphs (where |V| >= |E|), then storing neighbors
 in a unordered set would be easier.
 */

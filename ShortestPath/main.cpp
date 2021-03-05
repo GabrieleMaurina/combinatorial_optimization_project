@@ -1,13 +1,13 @@
 #include "graph.h"
 #include "dijkstra.h"
-#include "bellan_ford.h"
+#include "bellman_ford.h"
 #include "moore.h"
 
 #include <chrono>
 #include <iostream>
 
 #define DIJKSTRA 0
-#define BELLAN_FORD 1
+#define BELLMAN_FORD 1
 #define MOORE 2
 
 using std::chrono::high_resolution_clock;
@@ -56,7 +56,7 @@ int main(int argc, char**argv){
 }
 
 void run_benchmarks(){
-	cout<<"delta,density,|V|,|E|,dijkstra,bellan_ford,moore"<<endl;
+	cout<<"delta,density,|V|,|E|,dijkstra,bellman_ford,moore"<<endl;
 	for(auto c:configs){
 		Graph g(c.size,c.density,c.delta);
 		cout<<c.delta<<","<<c.density<<","<<c.size<<","<<g.edges.size()<<",";
@@ -77,6 +77,6 @@ ui time_tool(const ui i,const Graph& g,const ui s){
 
 void run_tool(const sui i,const Graph& g,const ui s){
 	if(i==DIJKSTRA)dijkstra(g,s);
-	else if(i==BELLAN_FORD)bellan_ford(g,s);
+	else if(i==BELLMAN_FORD)bellman_ford(g,s);
 	else if(i==MOORE)moore(g,s);
 }

@@ -1,0 +1,44 @@
+\documentclass{article}
+
+\usepackage{mathtools,amssymb,amsthm}
+\usepackage{minted}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\setlength{\abovecaptionskip}{0pt}
+
+\title{Combinatorial Optimization Report\\[1ex]
+\large Shortest Path algorithms comparison and Max Flow optimizations}
+\author{Maurina Gabriele}
+\date{\today}
+
+\begin{document}
+
+\begin{titlepage}
+\maketitle
+\end{titlepage}
+
+\begin{abstract}
+This document contains a report on the project created by Gabriele Maurina for the exam Combinatorial Optimization.
+The report is divided in two parts. The first is about the Shortest Path Problem. It contains an explanation of the problem,
+an explanation of the algorithms considered in the project and their implementations, and an evaluation of their performance
+with comparison between them. The algorithms implemented and compared in the first part are Dijkstra, Bellman-Ford and Moore.
+The results obtained show that Moore's algorithm is consistently the fastest, followed by a closed second Dijkstra's algorithm
+and Bellman-Ford's algorithm is consistently far behind.
+The second part is about the Max Flow problem. It contains an explanation of the problem, an explanation of the algorithms considered in the project and
+their implementations, and an evaluation of their performance with comparison between them. Particularly, this part of the project tried to
+use bidirectional extension of labels to improve the Ford-Fulkerson algorithm in its Breadth First Search (BFS) and Dijkstra variations. Overall the algorithms implemented
+and compared in the second part are Ford-Fulkerson with BFS for Shortest Augmenting Path, Ford-Fulkerson with bidirectional BFS for Shortest Augmenting Path,
+Ford-Fulkerson with Dijkstra for Maximum Capacity Augmenting Path and Ford-Fulkerson with bidirectional Dijkstra for Maximum Capacity Augmenting Path.
+The results obtained show that the bidirectional Dijkstra variation is consistently the fastest, with its monodirectional counterpart following closely.
+The BFS variation is consistently the slowest, whereas it bidirectional counterpart shows mixed results, being as fast as Dijkstra's variation
+when the average path length is short, i.e. with less than ten edges between source and destination, and being as slow as it monodirectional
+counterpart when the average path length is long, i.e. with hundreds of edges between source and destination.
+\end{abstract}
+
+\tableofcontents
+
+\input ShortestPath
+\input MaxFlow
+
+\end{document}

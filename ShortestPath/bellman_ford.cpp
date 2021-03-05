@@ -1,9 +1,9 @@
-#include "bellan_ford.h"
+#include "bellman_ford.h"
 #include "graph.h"
 
 #include <vector>
 
-void bellan_ford(const Graph& g,const ui s){
+void bellman_ford(const Graph& g,const ui s){
 	const ui N = g.vertices.size();
 	vector<ui> cost(N,INF);
 	vector<ui> pred(N,s);

@@ -1,0 +1,77 @@
+\section{Max Flow}
+\subsection{Problem}
+Given a directed graph $G=\{V,E\}$, where $V$ is the set of vertices, $E$ is the set of edges, $n=||V|$ and $m=|E|$.
+Let $s \in V$ be the source, let $t \in V$ be the sink and let $u: E \to \mathbb{R}_+$ be a capacity function.
+Let $z$ be the flow, i.e. a quantity that can traverse each edge from a vertex to another starting in $s$ and finishing in $t$ such that it never exceeds the capacity of an edge,
+it is not negative and the flow entering a vertex is equal to the flow leaving it, unless the vertex is $s$ or $t$. Furthermore the flow leaving $s$ is equal to the flow entering $t$.
+The non-negative continuous variable $x_{ij}$ indicates the flow on the edge $(i,j)\in E$.
+\vspace{1em}\\
+\textbf{Max Flow Problem:} maximize $z$ such that:
+\[
+\sum_{i\in V:(i,j)\in E} x_{ij} - \sum_{i\in V:(j,i)\in E} x_{ji} =
+\begin{cases}
+    z & \text{if } i=s\\
+    0 & \text{if } i\neq s,t\\
+    -z & \text{if } i=t
+\end{cases}
+\]
+
+\subsection{Implementation}
+
+\subsection{Results}
+
+\begin{table}[]
+\begin{tabular}{llllllll}
+delta & density & $|V|$  & $|E|$ & bfs    & bfs\_bi & dijkstra & dijkstra\_bi \\ \hline
+0     & 0.01    & 1000 & 9904    & 17     & 1       & 14       & 2            \\
+0     & 0.01    & 2000 & 39951   & 192    & 8       & 46       & 10           \\
+0     & 0.01    & 3000 & 89629   & 679    & 23      & 149      & 20           \\
+0     & 0.01    & 4000 & 160320  & 2279   & 52      & 862      & 53           \\
+0     & 0.05    & 1000 & 50371   & 471    & 25      & 97       & 23           \\
+0     & 0.05    & 2000 & 199272  & 5341   & 172     & 1769     & 98           \\
+0     & 0.05    & 3000 & 450017  & 22678  & 425     & 3101     & 248          \\
+0     & 0.05    & 4000 & 799392  & 60093  & 923     & 18611    & 629          \\
+0     & 0.1     & 1000 & 99926   & 2038   & 92      & 797      & 71           \\
+0     & 0.1     & 2000 & 400840  & 25488  & 443     & 6703     & 309          \\
+0     & 0.1     & 3000 & 897988  & 101777 & 1076    & 14265    & 747          \\
+0     & 0.1     & 4000 & 1598115 & 273573 & 2202    & 66067    & 1711         \\
+10    & 0.8     & 1000 & 15894   & 421    & 424     & 26       & 13           \\
+10    & 0.8     & 2000 & 32085   & 1023   & 1070    & 17       & 20           \\
+10    & 0.8     & 3000 & 47694   & 1128   & 1130    & 25       & 30           \\
+10    & 0.8     & 4000 & 63956   & 2136   & 2183    & 165      & 87           \\
+50    & 0.8     & 1000 & 78045   & 3331   & 3234    & 70       & 42           \\
+50    & 0.8     & 2000 & 157841  & 11794  & 11701   & 63       & 69           \\
+50    & 0.8     & 3000 & 238410  & 30368  & 29734   & 471      & 166          \\
+50    & 0.8     & 4000 & 318378  & 42911  & 44485   & 1396     & 237          \\
+100   & 0.8     & 1000 & 151990  & 9369   & 7343    & 578      & 125          \\
+100   & 0.8     & 2000 & 311963  & 36788  & 34126   & 2021     & 174          \\
+100   & 0.8     & 3000 & 472190  & 70093  & 64804   & 3023     & 274          \\
+100   & 0.8     & 4000 & 632013  & 122896 & 115424  & 4036     & 359
+\end{tabular}
+\caption{Max Flow Problem algorithms comparison}\label{table:mf}
+\end{table}
+
+\begin{figure}
+\includegraphics[width=\textwidth]{fig7}
+\caption{density=0.01}\label{fig:mf1}
+\end{figure}
+\begin{figure}
+\includegraphics[width=\textwidth]{fig8}
+\caption{density=0.05}\label{fig:mf2}
+\end{figure}
+\begin{figure}
+\includegraphics[width=\textwidth]{fig9}
+\caption{density=0.1}\label{fig:mf3}
+\end{figure}
+\begin{figure}
+\includegraphics[width=\textwidth]{fig10}
+\caption{delta=10}\label{fig:mf4}
+\end{figure}
+\begin{figure}
+\includegraphics[width=\textwidth]{fig11}
+\caption{delta=50}\label{fig:mf5}
+\end{figure}
+\begin{figure}
+\includegraphics[width=\textwidth]{fig12}
+\caption{delta=100}\label{fig:mf6}
+\end{figure}
